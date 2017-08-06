@@ -1,0 +1,66 @@
+server:
+  context-path: /
+  port: 8080
+  tomcat:
+    max-threads: 800
+    uri-encoding: UTF-8
+  
+db:
+  url: jdbc:mysql://localhost:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+  password: root
+ 
+spring:
+  profiles:
+    active:
+  datasource: 
+    type: com.alibaba.druid.pool.DruidDataSource
+  freemarker:
+    template-loader-path: classpath:/templates/
+    check-template-location: true
+    suffix: .ftl
+    defaultEncoding: UTF-8
+    cache: false
+    contentType: text/html
+    charset: utf-8
+    expose-request-attributes: true
+    expose-session-attributes: true
+    request-context-attribute: request
+  master:
+    driverClassName: com.mysql.jdbc.Driver
+    url: ${db.url}
+    username: root
+    password: ${db.password}
+    initialSize: 10
+    minIdle: 5
+    maxActive: 50
+    maxWait: 600000
+    removeAbandoned: true
+    removeAbandonedTimeout: 180
+    validationQuery: SELECT 1
+    testOnBorrow: true
+  slave1:
+    driverClassName: com.mysql.jdbc.Driver
+    url: ${db.url}
+    username: root
+    password: ${db.password}
+    initialSize: 10
+    minIdle: 5
+    maxActive: 50
+    maxWait: 600000
+    removeAbandoned: true
+    removeAbandonedTimeout: 180
+    validationQuery: SELECT 1
+    testOnBorrow: true
+  slave2:
+    driverClassName: com.mysql.jdbc.Driver
+    url: ${db.url}
+    username: root
+    password: ${db.password}
+    initialSize: 10
+    minIdle: 5
+    maxActive: 50
+    maxWait: 600000
+    removeAbandoned: true
+    removeAbandonedTimeout: 180
+    validationQuery: SELECT 1
+    testOnBorrow: true
