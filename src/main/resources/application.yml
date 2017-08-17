@@ -1,5 +1,5 @@
 server:
-  context-path: /
+  context-path: 
   port: 8080
   tomcat:
     max-threads: 800

@@ -1,10 +1,8 @@
 package com.lvmeng.qm.base.vo.proQn;
 
-import java.util.List;
+import com.lvmeng.qm.base.vo.BaseQn;
 
-import com.lvmeng.qm.base.vo.AbstractModel;
-
-public class ProQn extends AbstractModel {
+public class ProQn extends BaseQn {
 	/**
 	 * 
 	 */
@@ -21,7 +19,6 @@ public class ProQn extends AbstractModel {
 	private String name;
 	private String phone;
 	private String telephone;
-	private List<String> questionnaire;
 	public Integer getPanelId() {
 		return panelId;
 	}
@@ -93,12 +90,6 @@ public class ProQn extends AbstractModel {
 	}
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
-	}
-	public List<String> getQuestionnaire() {
-		return questionnaire;
-	}
-	public void setQuestionnaire(List<String> questionnaire) {
-		this.questionnaire = questionnaire;
 	}
 	
 }
