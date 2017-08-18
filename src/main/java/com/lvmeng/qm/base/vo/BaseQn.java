@@ -1,17 +1,17 @@
 package com.lvmeng.qm.base.vo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BaseQn extends AbstractModel {
-	protected List<String> questionnaire;
-	public List<String> getQuestionnaire() {
+	protected Set<SetString> questionnaire;
+	public Set<SetString> getQuestionnaire() {
 		if (questionnaire == null){
-			questionnaire = new ArrayList<>(15);
+			questionnaire = new HashSet<>();
 		}
 		return questionnaire;
 	}
-	public void setQuestionnaire(List<String> questionnaire) {
+	public void setQuestionnaire(Set<SetString> questionnaire) {
 		this.questionnaire = questionnaire;
 	}
 }

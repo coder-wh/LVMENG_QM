@@ -2,6 +2,9 @@ package com.lvmeng.qm.base.commons.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import com.lvmeng.qm.base.vo.BaseQn;
 import com.lvmeng.qm.base.vo.questionnaire.Questionnaire;
 
 public class ExcelUtil {
@@ -147,5 +151,33 @@ public class ExcelUtil {
 			break;
 		}
 		return value;
+	}
+	
+	public static <T> void toExcel(OutputStream out, String[] headers, List<BaseQn> list, Class t){
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet();
+		HSSFRow row = sheet.createRow(0);
+		for (short i = 0; i < headers.length; i++) {
+			HSSFCell cell = row.createCell(i);
+			cell.setCellValue(headers[i]);
+		}
+		int lastRowNum = 1;
+		for (BaseQn qn : list) {
+			row = sheet.createRow(lastRowNum);
+			Field[] fields = t.getDeclaredFields();
+			for (short i = 0; i < fields.length; i++) {
+				Field field = fields[i];
+	            String fieldName = field.getName();
+	            String getMethodName = "get"
+	                   + fieldName.substring(0, 1).toUpperCase()
+	                   + fieldName.substring(1);
+	            try {
+	                Method getMethod = t.getMethod(getMethodName, new Class[] {});
+	                Object value = getMethod.invoke(t, new Object[] {});
+	            }catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		}
 	}
 }

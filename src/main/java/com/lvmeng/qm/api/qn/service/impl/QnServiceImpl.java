@@ -2,6 +2,7 @@ package com.lvmeng.qm.api.qn.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import com.lvmeng.qm.base.commons.util.StringUtil;
 import com.lvmeng.qm.base.vo.BaseQn;
 import com.lvmeng.qm.base.vo.BaseResult;
 import com.lvmeng.qm.base.vo.Pattern;
+import com.lvmeng.qm.base.vo.SetString;
 import com.lvmeng.qm.base.vo.contactQn.ContactQn;
 import com.lvmeng.qm.base.vo.funcQn.FuncQn;
 import com.lvmeng.qm.base.vo.proQn.ProQn;
@@ -85,22 +87,54 @@ public class QnServiceImpl implements IQnService {
 		switch (pattern.getType()) {
 		case SELECT:
 			if (pattern.getList().contains(res)){
-				qn.getQuestionnaire().add(pattern.getIndex(), res);
+				SetString setString = new SetString(pattern.getIndex(), res);
+				Set<SetString> set = qn.getQuestionnaire();
+				if (set.contains(setString)){
+					SetString ss = get(set, setString);
+					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					set.add(ss);
+				}else {
+					set.add(setString);
+				}
 			}
 			break;
 		case LESS:
 			if (StringUtil.subNumber(res) < pattern.getScore()){
-				qn.getQuestionnaire().add(pattern.getIndex(), res);
+				SetString setString = new SetString(pattern.getIndex(), res);
+				Set<SetString> set = qn.getQuestionnaire();
+				if (set.contains(setString)){
+					SetString ss = get(set, setString);
+					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					set.add(ss);
+				}else {
+					set.add(setString);
+				}
 			}
 			break;
 		case ALL:
 			if (StringUtils.isNotBlank(res)){
-				qn.getQuestionnaire().add(pattern.getIndex(), res);
+				SetString setString = new SetString(pattern.getIndex(), res);
+				Set<SetString> set = qn.getQuestionnaire();
+				if (set.contains(setString)){
+					SetString ss = get(set, setString);
+					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					set.add(ss);
+				}else {
+					set.add(setString);
+				}
 			}
 			break;
 		case COMPARE:
 			if (StringUtils.isNotBlank(res)){
-				qn.getQuestionnaire().add(pattern.getIndex(), res);
+				SetString setString = new SetString(pattern.getIndex(), res);
+				Set<SetString> set = qn.getQuestionnaire();
+				if (set.contains(setString)){
+					SetString ss = get(set, setString);
+					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					set.add(ss);
+				}else {
+					set.add(setString);
+				}
 			}
 			break;
 		default:
@@ -108,4 +142,12 @@ public class QnServiceImpl implements IQnService {
 		}
 	}
 
+	private SetString get(Set<SetString> set, SetString setString){
+		for (SetString ss : set) {
+			if (ss.equals(setString)){
+				return ss;
+			}
+		}
+		return null;
+	}
 }
