@@ -6,19 +6,11 @@ public class ContactQn extends BaseQn {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3272480298319510858L;
-	private Integer panelId;
 	private String startTime;
 	private String customerName;
 	private String name;
 	private String phone;
 	private String telephone;
-	public Integer getPanelId() {
-		return panelId;
-	}
-	public void setPanelId(Integer panelId) {
-		this.panelId = panelId;
-	}
 	public String getStartTime() {
 		return startTime;
 	}

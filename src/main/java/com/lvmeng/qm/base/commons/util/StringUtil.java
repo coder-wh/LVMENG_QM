@@ -1,9 +1,12 @@
 package com.lvmeng.qm.base.commons.util;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class StringUtil {
 
@@ -12,21 +15,21 @@ public class StringUtil {
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
 		String trim = m.replaceAll("").trim();
-		if (trim != null && trim != "") {
+		if (StringUtils.isNotBlank(trim)) {
 			return Integer.valueOf(trim);
 		}
 		return null;
 	}
-	// public static void main(String[] args) {
-	// String str = "9分";
-	// System.out.println(subNumber(str));
-	// System.out.println(str);
-	// }
+//	 public static void main(String[] args) {
+//	 String str = "分";
+//	 System.out.println(subNumber(str));
+//	 System.out.println(str);
+//	 }
 
 	public static void main(String[] args) {
-		String strA = "'029-81772213";
-		String strB = "(029)81772213";
-		double result = SimilarDegree(strA, strB);
+		String strA = "E、安全平台类:大数据安全分析类,绿盟云服务类asdf";
+		String strB = "E、安全平台类:大数据安全分析类,绿盟云服务类";
+		double result = SimilarDegree(strB, strA);
 		if (result >= 0.7) {
 			System.out.println("相似度很高！" + similarityResult(result) + result);
 		} else {
@@ -44,6 +47,15 @@ public class StringUtil {
 	public static String similarityResult(double resule) {
 		return NumberFormat.getPercentInstance(new Locale("en ", "US ")).format(resule);
 	}
+	
+	public static boolean isContains(List<String> list, String str) {
+		 for (String string : list) {
+			if (SimilarDegree(string,str) > 0.8) {
+				return true;
+			}
+		 }
+		 return false;
+	}
 
 	/**
 	 * 
@@ -58,7 +70,12 @@ public class StringUtil {
 		String newStrA = removeSign(strA);
 		String newStrB = removeSign(strB);
 		int temp = Math.max(newStrA.length(), newStrB.length());
-		int temp2 = longestCommonSubstring(newStrA, newStrB).length();
+		int temp2 = 0;
+		if (newStrA.length() > newStrB.length()) {
+			temp2 = longestCommonSubstring(newStrA, newStrB).length();
+		}else {
+			temp2 = longestCommonSubstring(newStrB, newStrA).length();
+		}
 		return temp2 * 1.0 / temp;
 	}
 

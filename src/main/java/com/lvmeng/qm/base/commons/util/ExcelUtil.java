@@ -5,16 +5,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 
-import com.lvmeng.qm.base.vo.BaseQn;
+import com.lvmeng.qm.base.vo.SetString;
 import com.lvmeng.qm.base.vo.questionnaire.Questionnaire;
 
 public class ExcelUtil {
@@ -27,7 +34,7 @@ public class ExcelUtil {
 				HSSFSheet sheet = workbook.getSheetAt(0);
 				if (sheet != null && sheet.getLastRowNum() > 1) {
 					int rows = sheet.getLastRowNum();
-					for (int i = 1; i < rows; i++) {
+					for (int i = 1; i <= rows; i++) {
 						HSSFRow row = sheet.getRow(i);
 						if (row == null) {
 							continue;
@@ -138,7 +145,22 @@ public class ExcelUtil {
 		}
 		switch (cell.getCellTypeEnum()) {
 		case NUMERIC:
-			value = (int)cell.getNumericCellValue() + "";
+			short format = cell.getCellStyle().getDataFormat();  
+		    SimpleDateFormat sdf = null;  
+		    if(format == 14 || format == 31 || format == 57 || format == 58){  
+		        //日期  
+		        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		    }else if (format == 20 || format == 32) {  
+		        //时间  
+		        sdf = new SimpleDateFormat("HH:mm");  
+		    }
+		    if (sdf == null) {
+		    	value = (long)cell.getNumericCellValue() + "";
+		    }else {
+		    	double va = cell.getNumericCellValue();
+		    	Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(va);
+		    	value = sdf.format(date);
+		    }
 			break;
 		case STRING:
 			value = cell.getStringCellValue();
@@ -153,30 +175,63 @@ public class ExcelUtil {
 		return value;
 	}
 	
-	public static <T> void toExcel(OutputStream out, String[] headers, List<BaseQn> list, Class t){
+	public static <T> void toExcel(OutputStream out, String[] headers, List<T> list){
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet();
+		sheet.setDefaultColumnWidth((short) 25);
 		HSSFRow row = sheet.createRow(0);
-		for (short i = 0; i < headers.length; i++) {
-			HSSFCell cell = row.createCell(i);
-			cell.setCellValue(headers[i]);
+		if (ArrayUtils.isNotEmpty(headers)) {
+			for (short i = 0; i < headers.length; i++) {
+				HSSFCell cell = row.createCell(i);
+				cell.setCellValue(headers[i]);
+			}
 		}
 		int lastRowNum = 1;
-		for (BaseQn qn : list) {
-			row = sheet.createRow(lastRowNum);
-			Field[] fields = t.getDeclaredFields();
-			for (short i = 0; i < fields.length; i++) {
-				Field field = fields[i];
+		for (T t : list) {
+			row = sheet.createRow(lastRowNum++);
+			List<Field> fields = new ArrayList<>();
+			Class tempClass = t.getClass();
+			while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
+				fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
+			    tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+			}
+			int i = 0;
+			for (Field field : fields) {
 	            String fieldName = field.getName();
 	            String getMethodName = "get"
 	                   + fieldName.substring(0, 1).toUpperCase()
 	                   + fieldName.substring(1);
 	            try {
-	                Method getMethod = t.getMethod(getMethodName, new Class[] {});
+	                Method getMethod = t.getClass().getMethod(getMethodName, new Class[] {});
 	                Object value = getMethod.invoke(t, new Object[] {});
+	                if ((value instanceof Set) ) {
+	                	Set<SetString> set = (Set<SetString>)value;
+	                	for (SetString s : set) {
+	                		HSSFCell cell = row.createCell(fields.size()-1+s.getIndex());
+							cell.setCellValue(s.toString());
+						}
+	                }else {
+	                	if (value != null) {
+	                		HSSFCell cell = row.createCell(i++);
+	                		cell.setCellValue(value.toString());
+	                	}
+	                }
 	            }catch (Exception e) {
-					// TODO: handle exception
+	            	e.printStackTrace();
 				}
+			}
+		}
+		try {
+			workbook.write(out);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (workbook != null) {
+					workbook.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

@@ -48,6 +48,10 @@ public class SetString implements Comparable<SetString>{
 	public int compareTo(SetString o) {
 		return this.getIndex() - o.getIndex();
 	}
+	@Override
+	public String toString() {
+		return str;
+	}
 	
 
 }

@@ -6,8 +6,6 @@ public class SaleQn extends BaseQn {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8443632148826898960L;
-	private Integer panelId;
 	private String startTime;
 	private String proCoder;
 	private String proName;
@@ -16,12 +14,6 @@ public class SaleQn extends BaseQn {
 	private String name;
 	private String phone;
 	private String telephone;
-	public Integer getPanelId() {
-		return panelId;
-	}
-	public void setPanelId(Integer panelId) {
-		this.panelId = panelId;
-	}
 	public String getStartTime() {
 		return startTime;
 	}

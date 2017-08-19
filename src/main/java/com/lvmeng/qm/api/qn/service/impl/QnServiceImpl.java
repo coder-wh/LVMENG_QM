@@ -1,12 +1,20 @@
 package com.lvmeng.qm.api.qn.service.impl;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +38,18 @@ public class QnServiceImpl implements IQnService {
 	private IQnDao qnDao;
 
 	@Override
-	public BaseResult dealWithQn(MultipartFile file) {
+	public BaseResult dealWithQn(MultipartFile file,HttpServletResponse response) {
 		BaseResult result = new BaseResult();
 		try {
 			List<Questionnaire> list = ExcelUtil.toVO(file.getInputStream());
-			dealWithQn(list);
-			int rows = qnDao.saveQn(list);
+			Map<String, List<? extends BaseQn>> map = dealWithQn(list, response);
+			String createTime = LocalDateTime.now().toString();
+			Set<String> keySet = map.keySet();
+			for (String key : keySet) {
+				List<? extends BaseQn> baseQnList = map.get(key);
+				qnDao.saveBaseQn(baseQnList, createTime, CodeTable.codeMap.get(key));
+			}
+			int rows = qnDao.saveQn(list,createTime);
 			if (rows != list.size()) {
 				result.failure("问卷存储失败条数" + (list.size() - rows));
 			}
@@ -46,7 +60,8 @@ public class QnServiceImpl implements IQnService {
 		return result;
 	}
 	
-	private void dealWithQn(List<Questionnaire> list){
+	private Map<String,List<? extends BaseQn>> dealWithQn(List<Questionnaire> list,HttpServletResponse response) throws IOException{
+		Map<String,List<? extends BaseQn>> map = new HashMap<>();
 		List<ProQn> proQnList = new ArrayList<>();
 		List<SaleQn> saleQnList = new ArrayList<>();
 		List<FuncQn> funcQnList = new ArrayList<>();
@@ -58,19 +73,26 @@ public class QnServiceImpl implements IQnService {
 			SaleQn saleQn = new SaleQn();
 			FuncQn funcQn = new FuncQn();
 			ContactQn contactQn = new ContactQn();
+			BeanUtils.copyProperties(qn, proQn);
+			BeanUtils.copyProperties(qn, saleQn);
+			BeanUtils.copyProperties(qn, funcQn);
+			BeanUtils.copyProperties(qn, contactQn);
 			for (int i = 0; i < l.size(); i++) {
 				String res = l.get(i);
 				if (StringUtils.isNotBlank(res)){
 					if (CodeTable.proPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.proPattern.get(i+d);
 						dealWithAnswer(proQn, res, pattern);
-					}else if (CodeTable.salePattern.containsKey(i+d)){
+					}
+					if (CodeTable.salePattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.salePattern.get(i+d);
 						dealWithAnswer(saleQn, res, pattern);
-					}else if (CodeTable.funcPattern.containsKey(i+d)){
+					}
+					if (CodeTable.funcPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.funcPattern.get(i+d);
 						dealWithAnswer(funcQn, res, pattern);
-					}else if (CodeTable.contactPattern.containsKey(i+d)){
+					}
+					if (CodeTable.contactPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.contactPattern.get(i+d);
 						dealWithAnswer(contactQn, res, pattern);
 					}
@@ -81,17 +103,32 @@ public class QnServiceImpl implements IQnService {
 			funcQnList.add(funcQn);
 			contactQnList.add(contactQn);
 		}
+		map.put(CodeTable.QN_pro, proQnList);
+		map.put(CodeTable.QN_sale, saleQnList);
+		map.put(CodeTable.QN_func, funcQnList);
+		map.put(CodeTable.QN_contact, contactQnList);
+//		ServletOutputStream out = response.getOutputStream();
+		OutputStream proout = new FileOutputStream("D:/proQn.xls");
+		ExcelUtil.toExcel(proout, CodeTable.proHeader, proQnList);
+		OutputStream saleout = new FileOutputStream("D:/saleQn.xls");
+		ExcelUtil.toExcel(saleout, CodeTable.saleHeader, saleQnList);
+		OutputStream funcout = new FileOutputStream("D:/funcQn.xls");
+		ExcelUtil.toExcel(funcout, CodeTable.funcHeader, funcQnList);
+		OutputStream contactout = new FileOutputStream("D:/contactQn.xls");
+		ExcelUtil.toExcel(contactout, CodeTable.contactHeader, contactQnList);
+		
+		return map;
 	}
 
 	private void dealWithAnswer(BaseQn qn, String res, Pattern pattern) {
 		switch (pattern.getType()) {
 		case SELECT:
-			if (pattern.getList().contains(res)){
+			if (StringUtil.isContains(pattern.getList(), res)){
 				SetString setString = new SetString(pattern.getIndex(), res);
 				Set<SetString> set = qn.getQuestionnaire();
 				if (set.contains(setString)){
 					SetString ss = get(set, setString);
-					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					ss.setStr(ss.getStr() + CodeTable.separator + setString.getStr());
 					set.add(ss);
 				}else {
 					set.add(setString);
@@ -104,7 +141,7 @@ public class QnServiceImpl implements IQnService {
 				Set<SetString> set = qn.getQuestionnaire();
 				if (set.contains(setString)){
 					SetString ss = get(set, setString);
-					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					ss.setStr(ss.getStr() + CodeTable.separator + setString.getStr());
 					set.add(ss);
 				}else {
 					set.add(setString);
@@ -117,7 +154,7 @@ public class QnServiceImpl implements IQnService {
 				Set<SetString> set = qn.getQuestionnaire();
 				if (set.contains(setString)){
 					SetString ss = get(set, setString);
-					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					ss.setStr(ss.getStr() + CodeTable.separator + setString.getStr());
 					set.add(ss);
 				}else {
 					set.add(setString);
@@ -130,7 +167,7 @@ public class QnServiceImpl implements IQnService {
 				Set<SetString> set = qn.getQuestionnaire();
 				if (set.contains(setString)){
 					SetString ss = get(set, setString);
-					ss.setStr(ss.getStr() + CodeTable.regex + setString.getStr());
+					ss.setStr(ss.getStr() + CodeTable.separator + setString.getStr());
 					set.add(ss);
 				}else {
 					set.add(setString);

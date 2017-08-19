@@ -8,7 +8,6 @@ public class Questionnaire extends AbstractModel{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -1890353403378946852L;
 	private Integer qnId;
 	private Integer panelId;
 	private String startTime;

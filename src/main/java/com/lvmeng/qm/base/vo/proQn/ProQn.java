@@ -3,11 +3,6 @@ package com.lvmeng.qm.base.vo.proQn;
 import com.lvmeng.qm.base.vo.BaseQn;
 
 public class ProQn extends BaseQn {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1192373378547981672L;
-	private Integer panelId;
 	private String startTime;
 	private String proCoder;
 	private String proName;
@@ -19,12 +14,6 @@ public class ProQn extends BaseQn {
 	private String name;
 	private String phone;
 	private String telephone;
-	public Integer getPanelId() {
-		return panelId;
-	}
-	public void setPanelId(Integer panelId) {
-		this.panelId = panelId;
-	}
 	public String getStartTime() {
 		return startTime;
 	}

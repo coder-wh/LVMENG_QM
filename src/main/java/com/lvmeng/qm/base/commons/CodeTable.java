@@ -7,27 +7,43 @@ import com.lvmeng.qm.base.vo.Pattern;
 import com.lvmeng.qm.base.vo.Pattern_Type;
 
 public class CodeTable {
-	public static final String regex = "-*-";
+	public static final String regex = "#@@@@@@#";
+	
+	public static final String separator = ";";
 	//key 问卷导入时所在列的索引
 	public static final Map<Integer, Pattern> proPattern = new HashMap<>();
 	public static final Map<Integer, Pattern> salePattern = new HashMap<>();
 	public static final Map<Integer, Pattern> funcPattern = new HashMap<>();
 	public static final Map<Integer, Pattern> contactPattern = new HashMap<>();
+	
+	public static final String QN_sour = "source";
+	public static final String QN_pro = "project";
+	public static final String QN_sale = "sale";
+	public static final String QN_func = "function";
+	public static final String QN_contact = "contact";
+	
+	public static final Map<String, Integer> codeMap = new HashMap<>();
 	static {
+		codeMap.put(QN_sour, 1);	//原始问卷
+		codeMap.put(QN_pro, 2);		//工程
+		codeMap.put(QN_sale, 3);	//销售
+		codeMap.put(QN_func, 4);	//功能
+		codeMap.put(QN_contact, 5);	//联系人
+		
 		proPattern.put(43, new Pattern(0, "【绿盟】的【技术】"+regex+"【伙伴】的【技术】"));
 		
 		proPattern.put(44, new Pattern(1, "硬件产品类项目"+regex+"安全服务类项目"));
 		
-		proPattern.put(148, new Pattern(2, "C4_1 A、服务态度需要改善 您认为我们在服务方面需要改进的是?"));
-		proPattern.put(149, new Pattern(2, "C4_2 B、解决问题能力有限 您认为我们在服务方面需要改进的是?"));
-		proPattern.put(150, new Pattern(2, "C4_3 C、响应及时性待加强 您认为我们在服务方面需要改进的是?"));
+		proPattern.put(148, new Pattern(2, "A、服务态度需要改善"));
+		proPattern.put(149, new Pattern(2, "B、解决问题能力有限"));
+		proPattern.put(150, new Pattern(2, "C、响应及时性待加强"));
 		
-		proPattern.put(136, new Pattern(3, "C3_1 A、解决方案能力不足 您认为我们在专业能力方面需要改进的是?"));
-		proPattern.put(137, new Pattern(3, "C3_2 B、实施的产品了解程度不够 您认为我们在专业能力方面需要改进的是?"));
-		proPattern.put(138, new Pattern(3, "C3_3 C、专业技能不足 您认为我们在专业能力方面需要改进的是?"));
-		proPattern.put(142, new Pattern(3, "CF3_1 A、解决方案能力不足 您认为在专业能力方面我们需要改进的是?"));
-		proPattern.put(143, new Pattern(3, "CF3_2 B、交付验收文档不够清晰 您认为在专业能力方面我们需要改进的是?"));
-		proPattern.put(144, new Pattern(3, "CF3_3 C、专业技能不足 您认为在专业能力方面我们需要改进的是?"));
+		proPattern.put(136, new Pattern(3, "A、解决方案能力不足"));
+		proPattern.put(137, new Pattern(3, "B、实施的产品了解程度不够"));
+		proPattern.put(138, new Pattern(3, "C、专业技能不足"));
+		proPattern.put(142, new Pattern(3, "A、解决方案能力不足"));
+		proPattern.put(143, new Pattern(3, "B、交付验收文档不够清晰"));
+		proPattern.put(144, new Pattern(3, "C、专业技能不足"));
 		
 		proPattern.put(156, new Pattern(4, "C、不如同类厂商表现好"));
 		
@@ -69,10 +85,10 @@ public class CodeTable {
 		
 		salePattern.put(117, new Pattern(5, 6));	//B2.2.2 您给合作伙伴技术人员的表现打几分?
 		
-		salePattern.put(119, new Pattern(6, "B3_1 A、服务态度需要改善 您认为绿盟销售在服务方面需要改进的是?"));
-		salePattern.put(120, new Pattern(6, "B3_2 B、解决问题能力有限 您认为绿盟销售在服务方面需要改进的是?"));
-		salePattern.put(121, new Pattern(6, "B3_3 C、响应及时性待加强 您认为绿盟销售在服务方面需要改进的是?"));
-		salePattern.put(122, new Pattern(6, "B3_4 D、缺乏日常沟通和交流 您认为绿盟销售在服务方面需要改进的是?"));
+		salePattern.put(119, new Pattern(6, "A、服务态度需要改善"));
+		salePattern.put(120, new Pattern(6, "B、解决问题能力有限"));
+		salePattern.put(121, new Pattern(6, "C、响应及时性待加强"));
+		salePattern.put(122, new Pattern(6, "D、缺乏日常沟通和交流"));
 		
 		salePattern.put(126, new Pattern(7, "A、希望销售主动联系进行介绍"));
 		
@@ -131,4 +147,16 @@ public class CodeTable {
 		contactPattern.put(175, new Pattern(4, Pattern_Type.COMPARE)); //Q85_4 电话 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 		contactPattern.put(176, new Pattern(5, Pattern_Type.COMPARE)); //Q85_5 地址 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 	}
+	
+	public static final String[] contactHeader = {"PanelID","答题时间","客户名称","姓名","座机","手机","Q1 与绿盟科技的合作过程中您的主要角色是属于?","姓名","客户名称","邮件地址","电话","手机","联系人地址"};
+	public static final String[] proHeader = {"PanelID","答题时间","项目编号","项目名称","负责销售","项目经理","省份","所属工程部","客户名称","姓名","座机","手机","Q2 您选择给以下哪个角色做评价?"
+			,"Q3 您购买的是硬件产品还是评测、加固类的安全服务?","A、服务方面的不足之处","B、专业能力方面的不足之处","A2. 在您接触过的同类厂商中我们的整体表现如何?","A3 您有多大可能把绿盟的产品或者服务推荐给他人?"
+			,"C1 您对整个项目实施过程的满意程度评价是?","C2 您给绿盟科技技术人员的表现打几分?","CF1 您对项目整体服务过程的满意程度评价是?","客户意见建议"};
+	public static final String[] saleHeader = {"PanelID","答题时间","项目编号","项目名称","负责销售","客户名称","姓名","座机","手机","Q2 您选择给以下哪个角色做评价?"
+			,"B1 与同类厂商相比,您认为绿盟销售人员对您的关心程度怎样?","A2. 在您接触过的同类厂商中我们的整体表现如何?","A3 您有多大可能把绿盟的产品或者服务推荐给他人?","B2 您给绿盟销售经理的表现打几分?"
+			,"B2.2 您给合作伙伴销售人员的表现打几分?","A、服务方面的不足之处","B4 您近期是否有想要了解绿盟新产品服务或新解决方案的需求?","B4.1 您希望了解的产品或者服务内容是?","B4.2 您希望销售为您介绍产品解决方案的时间是?"
+			,"B4.3 不愿意接受新产品介绍的主要原因是什么呢?","客户意见建议"};
+	public static final String[] funcHeader = {"PanelID","答题时间","序列号","产品名称","客户名称","姓名","座机","手机"
+			,"D3_1(文本框题结果)如果您有产品缺陷和功能需求方面的建议,请您及时反馈给我们。需求被研发团队接纳,均可获赠100元京东礼品卡一张,您提供的问题需要满足以下其中之一:1、需求待规划中2、需求已被采纳","客户意见建议"};
+	
 }
