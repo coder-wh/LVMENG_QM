@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -19,8 +18,8 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.format.datetime.joda.LocalDateTimeParser;
 
+import com.lvmeng.qm.base.commons.CodeTable;
 import com.lvmeng.qm.base.vo.SetString;
 import com.lvmeng.qm.base.vo.questionnaire.Questionnaire;
 
@@ -175,7 +174,7 @@ public class ExcelUtil {
 		return value;
 	}
 	
-	public static <T> void toExcel(OutputStream out, String[] headers, List<T> list){
+	public static <T> void toExcel(OutputStream out, String[] headers, List<T> list, Class<?> c){
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet();
 		sheet.setDefaultColumnWidth((short) 25);
@@ -187,37 +186,48 @@ public class ExcelUtil {
 			}
 		}
 		int lastRowNum = 1;
-		for (T t : list) {
-			row = sheet.createRow(lastRowNum++);
+		if (!list.isEmpty()) {
 			List<Field> fields = new ArrayList<>();
-			Class tempClass = t.getClass();
-			while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
-				fields.addAll(Arrays.asList(tempClass.getDeclaredFields()));
-			    tempClass = tempClass.getSuperclass(); //得到父类,然后赋给自己
+			while (c != null && !c.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
+				fields.addAll(Arrays.asList(c.getDeclaredFields()));
+				c = c.getSuperclass(); //得到父类,然后赋给自己
 			}
-			int i = 0;
-			for (Field field : fields) {
-	            String fieldName = field.getName();
-	            String getMethodName = "get"
-	                   + fieldName.substring(0, 1).toUpperCase()
-	                   + fieldName.substring(1);
-	            try {
-	                Method getMethod = t.getClass().getMethod(getMethodName, new Class[] {});
-	                Object value = getMethod.invoke(t, new Object[] {});
-	                if ((value instanceof Set) ) {
-	                	Set<SetString> set = (Set<SetString>)value;
-	                	for (SetString s : set) {
-	                		HSSFCell cell = row.createCell(fields.size()-1+s.getIndex());
-							cell.setCellValue(s.toString());
-						}
-	                }else {
-	                	if (value != null) {
-	                		HSSFCell cell = row.createCell(i++);
-	                		cell.setCellValue(value.toString());
-	                	}
-	                }
-	            }catch (Exception e) {
-	            	e.printStackTrace();
+			List<Field> newFields = new ArrayList<>();
+			//排序算法有待优化
+			for (String fieldName : CodeTable.fieldSort) {
+				for (Field field : fields) {
+					if (field.getName().equals(fieldName)) {
+						newFields.add(field);
+					}
+				}
+			}
+			for (T t : list) {
+				row = sheet.createRow(lastRowNum++);
+				int i = 0;
+				for (Field field : newFields) {
+		            String fieldName = field.getName();
+		            String getMethodName = "get"
+		                   + fieldName.substring(0, 1).toUpperCase()
+		                   + fieldName.substring(1);
+		            try {
+		                Method getMethod = t.getClass().getMethod(getMethodName, new Class[] {});
+		                Object value = getMethod.invoke(t, new Object[] {});
+		                if ((value instanceof Set) ) {
+		                	@SuppressWarnings("unchecked")
+							Set<SetString> set = (Set<SetString>)value;
+		                	for (SetString s : set) {
+		                		HSSFCell cell = row.createCell(fields.size()-1+s.getIndex());
+								cell.setCellValue(s.toString());
+							}
+		                }else {
+		                	if (value != null) {
+		                		HSSFCell cell = row.createCell(i++);
+		                		cell.setCellValue(value.toString());
+		                	}
+		                }
+		            }catch (Exception e) {
+		            	e.printStackTrace();
+					}
 				}
 			}
 		}

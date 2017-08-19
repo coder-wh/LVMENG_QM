@@ -1,6 +1,8 @@
 package com.lvmeng.qm.base.commons;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.lvmeng.qm.base.vo.Pattern;
@@ -21,6 +23,8 @@ public class CodeTable {
 	public static final String QN_sale = "sale";
 	public static final String QN_func = "function";
 	public static final String QN_contact = "contact";
+	
+	public static final List<String> fieldSort = Arrays.asList("panelId","startTime","proCoder","proName","saler","proManager","province","engineer","serialNum","productName","customerName","name","phone","telephone","questionnaire");
 	
 	public static final Map<String, Integer> codeMap = new HashMap<>();
 	static {

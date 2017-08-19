@@ -109,13 +109,13 @@ public class QnServiceImpl implements IQnService {
 		map.put(CodeTable.QN_contact, contactQnList);
 //		ServletOutputStream out = response.getOutputStream();
 		OutputStream proout = new FileOutputStream("D:/proQn.xls");
-		ExcelUtil.toExcel(proout, CodeTable.proHeader, proQnList);
+		ExcelUtil.toExcel(proout, CodeTable.proHeader, proQnList, ProQn.class);
 		OutputStream saleout = new FileOutputStream("D:/saleQn.xls");
-		ExcelUtil.toExcel(saleout, CodeTable.saleHeader, saleQnList);
+		ExcelUtil.toExcel(saleout, CodeTable.saleHeader, saleQnList, SaleQn.class);
 		OutputStream funcout = new FileOutputStream("D:/funcQn.xls");
-		ExcelUtil.toExcel(funcout, CodeTable.funcHeader, funcQnList);
+		ExcelUtil.toExcel(funcout, CodeTable.funcHeader, funcQnList, FuncQn.class);
 		OutputStream contactout = new FileOutputStream("D:/contactQn.xls");
-		ExcelUtil.toExcel(contactout, CodeTable.contactHeader, contactQnList);
+		ExcelUtil.toExcel(contactout, CodeTable.contactHeader, contactQnList, ContactQn.class);
 		
 		return map;
 	}

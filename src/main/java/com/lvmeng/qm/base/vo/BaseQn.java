@@ -3,7 +3,7 @@ package com.lvmeng.qm.base.vo;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BaseQn extends AbstractModel {
+public class BaseQn {
 	protected Integer panelId;
 	protected Set<SetString> questionnaire;
 	

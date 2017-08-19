@@ -2,9 +2,7 @@ package com.lvmeng.qm.base.vo.questionnaire;
 
 import java.util.List;
 
-import com.lvmeng.qm.base.vo.AbstractModel;
-
-public class Questionnaire extends AbstractModel{
+public class Questionnaire {
 	/**
 	 * 
 	 */
