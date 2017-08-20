@@ -2,7 +2,6 @@ package com.lvmeng.qm.api.qn.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.List;
 
 import javax.annotation.Resource;
