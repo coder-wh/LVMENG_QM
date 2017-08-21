@@ -6,15 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="${request.contextPath}/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="${request.contextPath}/js/ajaxfileupload.js" type="text/javascript"></script>
     <title>Document</title>
     <style>
-        ul li{
-            list-style: none;
-            float: left;
-            margin-right: 40px;
-        }
         input{
             height: 28px;
             width:60px;
@@ -32,31 +26,63 @@
         .header input{
             margin: 6% 46%;
         }
-        .liList{
-            height: auto;
+        .header div{
+        	margin:6% 25%;
         }
-        .liList ul{
-            margin:5% 21%;
+        .upload{
+        	float: left;
         }
-        .clear{
-            clear: both;
-            visibility: hidden;
+        .error{
+        	color:red;
+        	display: inline-block;
+    		float: left;
         }
+        .button {  
+		    display: inline-block;  
+		    zoom: 1; /* zoom and *display = ie7 hack for display:inline-block */  
+		    *display: inline;  
+		    vertical-align: baseline;  
+		    margin: 0 2px;  
+		    outline: none;  
+		    cursor: pointer;  
+		    text-align: center;  
+		    text-decoration: none;  
+		    font: 14px/100% Arial, Helvetica, sans-serif;  
+		    padding: .5em 2em .55em;  
+		    text-shadow: 0 1px 1px rgba(0,0,0,.3);  
+		    -webkit-border-radius: .5em;   
+		    -moz-border-radius: .5em;  
+		    border-radius: .5em;  
+		    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);  
+		    -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);  
+		    box-shadow: 0 1px 2px rgba(0,0,0,.2);  
+		    background-color: gainsboro;
+		}  
+		.button:hover {  
+		    text-decoration: none;  
+		}  
+		.button:active {  
+		    position: relative;  
+		    top: 1px;  
+		}  
+		  
     </style>
 </head>
 <body>
     <div class="content">
         <div class="header">
-            <label>
-               <input type="file" name="file" style="display:none;"  id="file"  size="10"  />
-               <a class="upload_a" style="display:inline-block" >选择</a>
-               <span id='textfield_a'></span>
-           	</label>
-            <br>
-           	<input type="button" id="upload" value="上传" class=" upload" style="display:inline-block;"/>
-           	<input style="width:0.1px;border:0;" type="text" id="" name="upload" required value="">
-       </div>
-        <div class="clear"></div>
+            <div>
+            	<label>
+        	       <input type="file" name="file" value="" style="display:none;"  id="file"  size="10"  onchange="file_change()"/>
+    	           <a class="select button" style="display:inline-block" >选择</a>
+	               <span id='textfield_a'></span>
+            	</label>
+           	</div>
+            <div>
+            	<a type="button" id="upload" class="button upload" style="display:inline-block;"/>上传</a>
+           		<span class="error"></span>
+            </div>
+        </div>
     </div>
 </body>
 <script>
@@ -67,18 +93,19 @@
             fileElementId:'file',
             dataType: 'json',
             success: function (data){
-				console.log(data.c);
-				console.log(data.i);
+            	console.log(data.i);
+				$('.error').html(data.i);
             }
         });
     })
     
-    $('#file').change(function(){
-        var file = $(this).val();
+    function file_change(){
+    	var file = $('#file').val();
         var strFileName=file.replace(/^.+?\\([^\\]+?)(\.[^\.\\]*?)?$/gi,"$1");  //正则表达式获取文件名，不带后缀
         var FileExt=file.replace(/.+\./,"");
         var a=strFileName+'.'+FileExt
         $('#textfield_a').html(a)
-    })
+    }
+    
 </script>
 </html>
