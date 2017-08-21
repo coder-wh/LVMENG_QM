@@ -146,7 +146,7 @@ public class ExcelUtil {
 		case NUMERIC:
 			short format = cell.getCellStyle().getDataFormat();  
 		    SimpleDateFormat sdf = null;  
-		    if(format == 14 || format == 31 || format == 57 || format == 58){  
+		    if(format == 14 || format == 31 || format == 57 || format == 58 || format == 22){  
 		        //日期  
 		        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		    }else if (format == 20 || format == 32) {  
@@ -242,6 +242,72 @@ public class ExcelUtil {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static <T> void toSheet(HSSFWorkbook workbook, String sheetName, String[] headers, List<T> list, Class<?> c) throws Exception{
+		HSSFSheet sheet = workbook.createSheet(sheetName);
+		sheet.setDefaultColumnWidth((short) 25);
+		HSSFRow row = sheet.createRow(0);
+		if (ArrayUtils.isNotEmpty(headers)) {
+			for (short i = 0; i < headers.length; i++) {
+				HSSFCell cell = row.createCell(i);
+				cell.setCellValue(headers[i]);
+			}
+		}
+		int lastRowNum = 1;
+		if (!list.isEmpty()) {
+			List<Field> fields = new ArrayList<>();
+			while (c != null && !c.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
+				fields.addAll(Arrays.asList(c.getDeclaredFields()));
+				c = c.getSuperclass(); //得到父类,然后赋给自己
+			}
+			List<Field> newFields = new ArrayList<>();
+			//排序算法有待优化
+			for (String fieldName : CodeTable.fieldSort) {
+				for (Field field : fields) {
+					if (field.getName().equals(fieldName)) {
+						newFields.add(field);
+					}
+				}
+			}
+			for (T t : list) {
+				
+//				Object obj = t.getClass().getMethod("getQuestionnaire", new Class[] {}).invoke(t, new Object[] {});
+//				@SuppressWarnings("unchecked")
+//				Set<SetString> qn = (Set<SetString>)obj;
+//				if (qn.isEmpty()){
+//					continue;
+//				}
+				
+				row = sheet.createRow(lastRowNum++);
+				int i = 0;
+				for (Field field : newFields) {
+					String fieldName = field.getName();
+					String getMethodName = "get"
+							+ fieldName.substring(0, 1).toUpperCase()
+							+ fieldName.substring(1);
+					try {
+						Method getMethod = t.getClass().getMethod(getMethodName, new Class[] {});
+						Object value = getMethod.invoke(t, new Object[] {});
+						if ((value instanceof Set) ) {
+							@SuppressWarnings("unchecked")
+							Set<SetString> set = (Set<SetString>)value;
+							for (SetString s : set) {
+								HSSFCell cell = row.createCell(fields.size()-1+s.getIndex());
+								cell.setCellValue(s.toString());
+							}
+						}else {
+							if (value != null) {
+								HSSFCell cell = row.createCell(i++);
+								cell.setCellValue(value.toString());
+							}
+						}
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 	}
