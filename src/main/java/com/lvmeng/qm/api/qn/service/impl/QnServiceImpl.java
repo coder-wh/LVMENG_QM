@@ -161,8 +161,6 @@ public class QnServiceImpl implements IQnService {
 		map.put(CodeTable.QN_sale, saleQnList);
 		map.put(CodeTable.QN_func, funcQnList);
 		map.put(CodeTable.QN_contact, contactQnList);
-		
-		
 		return map;
 	}
 

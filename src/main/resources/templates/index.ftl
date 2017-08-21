@@ -56,13 +56,6 @@
            	<input type="button" id="upload" value="上传" class=" upload" style="display:inline-block;"/>
            	<input style="width:0.1px;border:0;" type="text" id="" name="upload" required value="">
        </div>
-        <!--
-        <div class="liList">
-            <ul>
-                <li><input type="button" value="下载"></li>
-            </ul>
-        </div>
-        -->
         <div class="clear"></div>
     </div>
 </body>
