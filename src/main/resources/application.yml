@@ -6,7 +6,7 @@ server:
     uri-encoding: UTF-8
   
 db:
-  url: jdbc:mysql://localhost:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+  url: jdbc:mysql://119.29.201.220:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
   password: whui@root
  
 spring:

@@ -32,6 +32,9 @@ public class ExcelUtil {
 			if (workbook != null && workbook.getNumberOfSheets() > 0) {
 				HSSFSheet sheet = workbook.getSheetAt(0);
 				if (sheet != null && sheet.getLastRowNum() > 1) {
+					if (sheet.getRow(0).getLastCellNum() != 179){
+						throw new Exception("总列数不等于179,请检查表格");
+					}
 					int rows = sheet.getLastRowNum();
 					for (int i = 1; i <= rows; i++) {
 						HSSFRow row = sheet.getRow(i);
@@ -39,9 +42,6 @@ public class ExcelUtil {
 							continue;
 						}
 						int cells = row.getLastCellNum();
-						if (cells != 179){
-							throw new Exception("总列数不等于179,请检查表格");
-						}
 						Questionnaire qn = new Questionnaire();
 						List<String> baseInfo = new ArrayList<>();
 						List<String> questionnaire = new ArrayList<>();
