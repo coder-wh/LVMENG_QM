@@ -1,6 +1,5 @@
 package com.lvmeng.qm.api.qn.service.impl;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -93,11 +92,9 @@ public class QnServiceImpl implements IQnService {
 					break;
 				}
 			}
-			out = new FileOutputStream("C:/Users/wanghui/Desktop/梅姐/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")) + ".xls");
-			
-			DownloadUtil.downloadExcel(response, workbook, "测试下载.xls");
-
-			workbook.write(out);
+//			out = new FileOutputStream("C:/Users/wanghui/Desktop/梅姐/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")) + ".xls");
+//			workbook.write(out);
+			DownloadUtil.downloadExcel(response, workbook, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"))+"处理.xls");
 		}  catch (Exception e) {
 			e.printStackTrace();
 			result.failure(e.getMessage());

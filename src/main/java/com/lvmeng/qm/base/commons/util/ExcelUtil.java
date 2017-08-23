@@ -39,6 +39,9 @@ public class ExcelUtil {
 							continue;
 						}
 						int cells = row.getLastCellNum();
+						if (cells != 179){
+							throw new Exception("总列数不等于179,请检查表格");
+						}
 						Questionnaire qn = new Questionnaire();
 						List<String> baseInfo = new ArrayList<>();
 						List<String> questionnaire = new ArrayList<>();
@@ -274,12 +277,12 @@ public class ExcelUtil {
 			}
 			for (T t : list) {
 				
-//				Object obj = t.getClass().getMethod("getQuestionnaire", new Class[] {}).invoke(t, new Object[] {});
-//				@SuppressWarnings("unchecked")
-//				Set<SetString> qn = (Set<SetString>)obj;
-//				if (qn.isEmpty()){
-//					continue;
-//				}
+				Object obj = t.getClass().getMethod("getQuestionnaire", new Class[] {}).invoke(t, new Object[] {});
+				@SuppressWarnings("unchecked")
+				Set<SetString> qn = (Set<SetString>)obj;
+				if (qn.isEmpty()){
+					continue;
+				}
 				
 				row = sheet.createRow(lastRowNum++);
 				int i = 0;
