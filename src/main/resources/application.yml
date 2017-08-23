@@ -1,13 +1,13 @@
 server:
   context-path: 
-  port: 8080
+  port: 80
   tomcat:
     max-threads: 800
     uri-encoding: UTF-8
   
 db:
   url: jdbc:mysql://localhost:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
-  password: root
+  password: whui@root
  
 spring:
   profiles:
