@@ -87,6 +87,8 @@
 </body>
 <script>
 	$("#upload").click(function () {
+		$('.error').html("");
+	
         $.ajaxFileUpload({
             url: '${request.contextPath}/qn/upload',
             secureuri: false,
