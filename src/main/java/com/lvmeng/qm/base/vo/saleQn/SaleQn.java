@@ -6,19 +6,27 @@ public class SaleQn extends BaseQn {
 	/**
 	 * 
 	 */
-	private String startTime;
+	private String endTime;
 	private String proCoder;
 	private String proName;
 	private String saler;
+	private String secondBranch;
 	private String customerName;
 	private String name;
 	private String phone;
 	private String telephone;
-	public String getStartTime() {
-		return startTime;
+	
+	public String getSecondBranch() {
+		return secondBranch;
 	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setSecondBranch(String secondBranch) {
+		this.secondBranch = secondBranch;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 	public String getProCoder() {
 		return proCoder;

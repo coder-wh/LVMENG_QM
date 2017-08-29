@@ -6,16 +6,16 @@ public class ContactQn extends BaseQn {
 	/**
 	 * 
 	 */
-	private String startTime;
+	private String endTime;
 	private String customerName;
 	private String name;
 	private String phone;
 	private String telephone;
-	public String getStartTime() {
-		return startTime;
+	public String getEndTime() {
+		return endTime;
 	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 	public String getCustomerName() {
 		return customerName;

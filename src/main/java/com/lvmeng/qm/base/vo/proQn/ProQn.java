@@ -3,7 +3,7 @@ package com.lvmeng.qm.base.vo.proQn;
 import com.lvmeng.qm.base.vo.BaseQn;
 
 public class ProQn extends BaseQn {
-	private String startTime;
+	private String endTime;
 	private String proCoder;
 	private String proName;
 	private String saler;
@@ -14,11 +14,12 @@ public class ProQn extends BaseQn {
 	private String name;
 	private String phone;
 	private String telephone;
-	public String getStartTime() {
-		return startTime;
+	
+	public String getEndTime() {
+		return endTime;
 	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 	public String getProCoder() {
 		return proCoder;

@@ -6,18 +6,18 @@ public class FuncQn extends BaseQn {
 	/**
 	 * 
 	 */
-	private String startTime;
+	private String endTime;
 	private String serialNum;
 	private String productName;
 	private String customerName;
 	private String name;
 	private String phone;
 	private String telephone;
-	public String getStartTime() {
-		return startTime;
+	public String getEndTime() {
+		return endTime;
 	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
 	}
 	public String getSerialNum() {
 		return serialNum;

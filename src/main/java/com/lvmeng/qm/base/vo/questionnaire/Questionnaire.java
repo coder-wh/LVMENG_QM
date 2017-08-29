@@ -21,6 +21,7 @@ public class Questionnaire {
 	private String telephone;
 	private String proName;
 	private String saler;
+	private String secondBranch;
 	private String proManager;
 	private String serialNum;
 	private String productName;
@@ -30,6 +31,12 @@ public class Questionnaire {
 	private List<String> baseInfo;
 	private List<String> questionnaire;
 	
+	public String getSecondBranch() {
+		return secondBranch;
+	}
+	public void setSecondBranch(String secondBranch) {
+		this.secondBranch = secondBranch;
+	}
 	public List<String> getBaseInfo() {
 		return baseInfo;
 	}

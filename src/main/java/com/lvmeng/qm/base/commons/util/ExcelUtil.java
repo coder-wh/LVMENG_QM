@@ -110,6 +110,9 @@ public class ExcelUtil {
 		case 23:
 			qn.setSaler(value);
 			break;
+		case 24:
+			qn.setSecondBranch(value);
+			break;
 		case 26:
 			qn.setProManager(value);
 			break;

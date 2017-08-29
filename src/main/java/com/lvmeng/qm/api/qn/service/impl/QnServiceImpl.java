@@ -124,10 +124,6 @@ public class QnServiceImpl implements IQnService {
 			SaleQn saleQn = new SaleQn();
 			FuncQn funcQn = new FuncQn();
 			ContactQn contactQn = new ContactQn();
-			BeanUtils.copyProperties(qn, proQn);
-			BeanUtils.copyProperties(qn, saleQn);
-			BeanUtils.copyProperties(qn, funcQn);
-			BeanUtils.copyProperties(qn, contactQn);
 			for (int i = 0; i < l.size(); i++) {
 				String res = l.get(i);
 				if (StringUtils.isNotBlank(res)){
@@ -149,8 +145,30 @@ public class QnServiceImpl implements IQnService {
 					}
 				}
 			}
-			proQnList.add(proQn);
-			saleQnList.add(saleQn);
+			BeanUtils.copyProperties(qn, proQn);
+			BeanUtils.copyProperties(qn, saleQn);
+			BeanUtils.copyProperties(qn, funcQn);
+			BeanUtils.copyProperties(qn, contactQn);
+			if (proQn.getQuestionnaire().contains(new SetString(1,""))){
+				Set<SetString> set = proQn.getQuestionnaire();
+				boolean ifAddToProList = true;
+				for (SetString setString : set) {
+					if (setString.getIndex() == 0 && "合作伙伴".equals(setString.getStr())){
+						SaleQn sqn = new SaleQn();
+						BeanUtils.copyProperties(qn, sqn);
+						sqn.setQuestionnaire(proQn.getQuestionnaire());
+						saleQnList.add(sqn);
+						ifAddToProList = false;
+						break;
+					}
+				}
+				if (ifAddToProList){
+					proQnList.add(proQn);
+				}
+			}
+			if (saleQn.getQuestionnaire().contains(new SetString(1,""))){
+				saleQnList.add(saleQn);
+			}
 			funcQnList.add(funcQn);
 			contactQnList.add(contactQn);
 		}
