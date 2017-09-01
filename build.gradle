@@ -3,7 +3,7 @@ buildscript {
 		springBootVersion = '1.5.6.RELEASE'
 	}
     repositories {
-    	maven {url "http://192.168.2.206:8081/nexus/content/groups/public"}
+    	//maven {url "http://192.168.2.206:8081/nexus/content/groups/public"}
     	jcenter()
 	}
     dependencies {
@@ -18,12 +18,12 @@ apply plugin: 'org.springframework.boot'
 //生成的jar包包名和版本
 jar {
     baseName = 'LVMENG_QM'
-    version =  '0.1.0'
+    version =  '0.2.0'
 }
 
 repositories {
-	maven {url "http://192.168.2.206:8081/nexus/content/groups/public"}
-	//jcenter()
+	//maven {url "http://192.168.2.206:8081/nexus/content/groups/public"}
+	jcenter()
     //jcenter {url "http://jcenter.bintray.com"}
 }
 

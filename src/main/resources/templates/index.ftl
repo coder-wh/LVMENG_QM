@@ -95,7 +95,6 @@
             fileElementId:'file',
             dataType: 'json',
             success: function (data){
-            	console.log(data.i);
 				$('.error').html(data.i);
             }
         });
