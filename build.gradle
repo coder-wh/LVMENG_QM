@@ -18,7 +18,7 @@ apply plugin: 'org.springframework.boot'
 //生成的jar包包名和版本
 jar {
     baseName = 'LVMENG_QM'
-    version =  '0.2.0'
+    version =  '1.0.0'
 }
 
 repositories {

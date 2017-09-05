@@ -4,6 +4,12 @@ server:
   tomcat:
     max-threads: 800
     uri-encoding: UTF-8
+    accesslog:
+      enabled: true
+      directory: /data/logs/lvmeng/qn
+      prefix: lvmeng_qm_access_log
+      suffix: .txt
+
   
 db:
   url: jdbc:mysql://119.29.201.220:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false

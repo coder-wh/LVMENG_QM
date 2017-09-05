@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="${request.contextPath}/js/jquery-3.2.1.min.js" type="text/javascript"></script>
     <script src="${request.contextPath}/js/ajaxfileupload.js" type="text/javascript"></script>
-    <title>Document</title>
+    <title>问卷处理</title>
     <style>
         input{
             height: 28px;
