@@ -125,6 +125,9 @@ public class ExcelUtil {
 		case 31:
 			qn.setProCoder(value);
 			break;
+		case 37:
+			qn.setAddress(value);
+			break;
 		case 38:
 			qn.setEngineer(value);
 			break;

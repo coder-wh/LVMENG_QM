@@ -15,8 +15,8 @@
         }
         .content{
             border: 1px solid #cccccc;
-            width:40%;
-            height:200px;
+            width:50%;
+            height:300px;
             margin:auto;
             margin-top: 15%;
         }
@@ -28,6 +28,7 @@
         }
         .header div{
         	margin:6% 25%;
+        	width: 400px;
         }
         .upload{
         	float: left;
@@ -73,14 +74,15 @@
         <div class="header">
             <div>
             	<label>
-        	       <input type="file" name="file" value="" style="display:none;"  id="file"  size="10"  onchange="file_change()"/>
+        	       <input type="file" name="file"  style="display:none;"  id="file"  size="10"  onchange="file_change()"/>
     	           <a class="select button" style="display:inline-block" >选择</a>
 	               <span id='textfield_a'></span>
             	</label>
            	</div>
             <div>
             	<a type="button" id="upload" class="button upload" style="display:inline-block;"/>上传</a>
-           		<span class="error"></span>
+           		<span class="error"></span><br/><br/><br/>
+           		<h3>上传成功后若需再次上传请刷新页面</h3>
             </div>
         </div>
     </div>

@@ -152,13 +152,13 @@ public class CodeTable {
 		
 		contactPattern.put(42, new Pattern(0, Pattern_Type.ALL)); //Q1 与绿盟科技的合作过程中您的主要角色是属于?
 		contactPattern.put(172, new Pattern(1, Pattern_Type.COMPARE)); //Q85_1 姓名 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
-		contactPattern.put(173, new Pattern(2, Pattern_Type.ALL)); //Q85_2 单位 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
+		contactPattern.put(173, new Pattern(2, Pattern_Type.COMPARE)); //Q85_2 单位 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 		contactPattern.put(174, new Pattern(3, Pattern_Type.COMPARE)); //Q85_3 邮箱 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 		contactPattern.put(175, new Pattern(4, Pattern_Type.COMPARE)); //Q85_4 电话 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 		contactPattern.put(176, new Pattern(5, Pattern_Type.COMPARE)); //Q85_5 地址 为了方便为您提供绿盟科技的安全事件、安全动态、安全资讯等信息,请您完善以下联系方式,我们将定期为您发送。感谢您的支持!
 	}
 	
-	public static final String[] contactHeader = {"PanelID","答题时间","客户名称","姓名","座机","手机","Q1 与绿盟科技的合作过程中您的主要角色是属于?","客户名称","姓名","邮件地址","电话","手机","联系人地址"};
+	public static final String[] contactHeader = {"PanelID","答题时间","客户名称","姓名","座机","手机","Q1 与绿盟科技的合作过程中您的主要角色是属于?","姓名","客户名称","邮件地址","电话","联系人地址"};
 	public static final String[] proHeader = {"PanelID","答题时间","项目编号","项目名称","负责销售","项目经理","省份","所属工程部","客户名称","姓名","座机","手机","Q1 与绿盟科技的合作过程中您的主要角色是属于?"
 			,"Q2 您选择给以下哪个角色做评价?","Q3 您购买的是硬件产品还是评测、加固类的安全服务?","A、服务方面的不足之处","B、专业能力方面的不足之处","A2. 在您接触过的同类厂商中我们的整体表现如何?","A3 您有多大可能把绿盟的产品或者服务推荐给他人?"
 			,"C1 您对整个项目实施过程的满意程度评价是?","C2 您给绿盟科技技术人员的表现打几分?","CF1 您对项目整体服务过程的满意程度评价是?","B2.2.2 您给合作伙伴技术人员的表现打几分?","客户意见建议"};

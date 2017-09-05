@@ -19,6 +19,7 @@ public class Questionnaire {
 	private String email;
 	private String phone;
 	private String telephone;
+	private String address;
 	private String proName;
 	private String saler;
 	private String secondBranch;
@@ -31,6 +32,12 @@ public class Questionnaire {
 	private List<String> baseInfo;
 	private List<String> questionnaire;
 	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public String getSecondBranch() {
 		return secondBranch;
 	}

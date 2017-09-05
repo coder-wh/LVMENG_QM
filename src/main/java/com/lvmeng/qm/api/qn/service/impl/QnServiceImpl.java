@@ -60,7 +60,7 @@ public class QnServiceImpl implements IQnService {
 			}
 			
 			List<Questionnaire> list = ExcelUtil.toVO(file.getInputStream());
-			Map<String, List<? extends BaseQn>> map = dealWithQn(list, response);
+			Map<String, List<? extends BaseQn>> map = dealWithQn(list);
 //			String createTime = LocalDateTime.now().toString();
 //			Set<String> keySet = map.keySet();
 //			for (String key : keySet) {
@@ -111,7 +111,7 @@ public class QnServiceImpl implements IQnService {
 		return result;
 	}
 	
-	private Map<String,List<? extends BaseQn>> dealWithQn(List<Questionnaire> list,HttpServletResponse response) {
+	private Map<String,List<? extends BaseQn>> dealWithQn(List<Questionnaire> list) {
 		Map<String,List<? extends BaseQn>> map = new HashMap<>();
 		List<ProQn> proQnList = new ArrayList<>();
 		List<SaleQn> saleQnList = new ArrayList<>();
@@ -129,19 +129,19 @@ public class QnServiceImpl implements IQnService {
 				if (StringUtils.isNotBlank(res)){
 					if (CodeTable.proPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.proPattern.get(i+d);
-						dealWithAnswer(proQn, res, pattern);
+						dealWithAnswer(proQn, res, pattern, qn);
 					}
 					if (CodeTable.salePattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.salePattern.get(i+d);
-						dealWithAnswer(saleQn, res, pattern);
+						dealWithAnswer(saleQn, res, pattern, qn);
 					}
 					if (CodeTable.funcPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.funcPattern.get(i+d);
-						dealWithAnswer(funcQn, res, pattern);
+						dealWithAnswer(funcQn, res, pattern, qn);
 					}
 					if (CodeTable.contactPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.contactPattern.get(i+d);
-						dealWithAnswer(contactQn, res, pattern);
+						dealWithAnswer(contactQn, res, pattern, qn);
 					}
 				}
 			}
@@ -179,7 +179,7 @@ public class QnServiceImpl implements IQnService {
 		return map;
 	}
 
-	private void dealWithAnswer(BaseQn qn, String res, Pattern pattern) {
+	private void dealWithAnswer(BaseQn qn, String res, Pattern pattern, Questionnaire sourceQn) {
 		switch (pattern.getType()) {
 		case SELECT:
 			if (StringUtil.isContains(pattern.getList(), res)){
@@ -197,8 +197,19 @@ public class QnServiceImpl implements IQnService {
 			}
 			break;
 		case COMPARE:
+			double score = 0.9;
 			if (StringUtils.isNotBlank(res)){
-				add(qn, res, pattern);
+				if (StringUtils.isNotBlank(sourceQn.getName())) {
+					if ((StringUtils.isNotBlank(sourceQn.getName()) && (StringUtil.SimilarDegree(sourceQn.getName(), res) >= score || sourceQn.getName().contains(res)))
+						|| (StringUtils.isNotBlank(sourceQn.getCustomerName()) && (StringUtil.SimilarDegree(sourceQn.getCustomerName(), res) >= score || sourceQn.getCustomerName().contains(res)))
+						|| (StringUtils.isNotBlank(sourceQn.getEmail()) && (StringUtil.SimilarDegree(sourceQn.getEmail(), res) >= score || sourceQn.getEmail().contains(res)))
+						|| (StringUtils.isNotBlank(sourceQn.getPhone()) && (StringUtil.SimilarDegree(sourceQn.getPhone(), res) >= score || sourceQn.getPhone().contains(res)))
+						|| (StringUtils.isNotBlank(sourceQn.getTelephone()) && (StringUtil.SimilarDegree(sourceQn.getTelephone(), res) >= score || sourceQn.getTelephone().contains(res)))
+						|| (StringUtils.isNotBlank(sourceQn.getAddress()) && (StringUtil.SimilarDegree(sourceQn.getAddress(), res) >= score || sourceQn.getAddress().contains(res)))) {
+					}else {
+						add(qn, res, pattern);
+					}
+				}
 			}
 			break;
 		default:
