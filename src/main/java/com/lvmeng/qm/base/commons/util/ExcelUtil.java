@@ -24,6 +24,12 @@ import com.lvmeng.qm.base.vo.SetString;
 import com.lvmeng.qm.base.vo.questionnaire.Questionnaire;
 
 public class ExcelUtil {
+	/**
+	 * 读取Excel并封装为对象
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	public static List<Questionnaire> toVO(InputStream file) throws Exception{
 		HSSFWorkbook workbook = null;
 		List<Questionnaire> list = new ArrayList<>();
@@ -45,13 +51,16 @@ public class ExcelUtil {
 						Questionnaire qn = new Questionnaire();
 						List<String> baseInfo = new ArrayList<>();
 						List<String> questionnaire = new ArrayList<>();
+						//遍历每一个cell
 						for (int j = 0; j < cells; j++) {
 							HSSFCell cell = row.getCell(j);
+							//将cell取值为String
 							String value = getStringCellValue(cell);
+							//下标为41(包含41)以前的表格为联系人基本信息
 							if (j <= 41) {
 								baseInfo.add(value);
 								setQnFieldsValue(qn, j, value);
-							}else {
+							}else {//41以后的为问卷答案
 								questionnaire.add(value);
 							}
 						}
@@ -75,6 +84,13 @@ public class ExcelUtil {
 		return list;
 	}
 
+	
+	/**
+	 * 将对应列的值赋值给联系人基本信息相关字段
+	 * @param qn
+	 * @param j
+	 * @param value
+	 */
 	private static void setQnFieldsValue(Questionnaire qn, int j, String value) {
 		switch (j) {
 		case 0:
@@ -146,6 +162,11 @@ public class ExcelUtil {
 		return 0;
 	}
 
+	/**
+	 * 将每个cell取值为String
+	 * @param cell
+	 * @return
+	 */
 	private static String getStringCellValue(HSSFCell cell) {
 		String value;
 		if (cell == null) {
@@ -255,10 +276,20 @@ public class ExcelUtil {
 		}
 	}
 	
+	/**
+	 * 创建新sheet
+	 * @param workbook
+	 * @param sheetName
+	 * @param headers
+	 * @param list
+	 * @param c
+	 * @throws Exception
+	 */
 	public static <T> void toSheet(HSSFWorkbook workbook, String sheetName, String[] headers, List<T> list, Class<?> c) throws Exception{
 		HSSFSheet sheet = workbook.createSheet(sheetName);
 		sheet.setDefaultColumnWidth((short) 25);
 		HSSFRow row = sheet.createRow(0);
+		//设置表格的表头
 		if (ArrayUtils.isNotEmpty(headers)) {
 			for (short i = 0; i < headers.length; i++) {
 				HSSFCell cell = row.createCell(i);
@@ -268,12 +299,14 @@ public class ExcelUtil {
 		int lastRowNum = 1;
 		if (!list.isEmpty()) {
 			List<Field> fields = new ArrayList<>();
+			//反射获取对应类的所有属性   包含其父类的属性(到Object以下)
 			while (c != null && !c.getName().toLowerCase().equals("java.lang.object")) {//当父类为null的时候说明到达了最上层的父类(Object类).
 				fields.addAll(Arrays.asList(c.getDeclaredFields()));
 				c = c.getSuperclass(); //得到父类,然后赋给自己
 			}
 			List<Field> newFields = new ArrayList<>();
 			//排序算法有待优化
+			//将所有字段按照正确的顺序排列
 			for (String fieldName : CodeTable.fieldSort) {
 				for (Field field : fields) {
 					if (field.getName().equals(fieldName)) {
@@ -284,6 +317,7 @@ public class ExcelUtil {
 			for (T t : list) {
 				
 				Object obj = t.getClass().getMethod("getQuestionnaire", new Class[] {}).invoke(t, new Object[] {});
+				//取值后问卷内容为空的不添加到Excel中
 				@SuppressWarnings("unchecked")
 				Set<SetString> qn = (Set<SetString>)obj;
 				if (qn.isEmpty()){
@@ -292,18 +326,21 @@ public class ExcelUtil {
 				
 				row = sheet.createRow(lastRowNum++);
 				int i = 0;
+				//按照排列好的字段列表的顺序依次取值
 				for (Field field : newFields) {
 					String fieldName = field.getName();
 					String getMethodName = "get"
 							+ fieldName.substring(0, 1).toUpperCase()
 							+ fieldName.substring(1);
 					try {
+						//反射调用getter方法取值
 						Method getMethod = t.getClass().getMethod(getMethodName, new Class[] {});
 						Object value = getMethod.invoke(t, new Object[] {});
 						if ((value instanceof Set) ) {
 							@SuppressWarnings("unchecked")
 							Set<SetString> set = (Set<SetString>)value;
 							for (SetString s : set) {
+								//按照SetString的下标index值创建cell
 								HSSFCell cell = row.createCell(fields.size()-1+s.getIndex());
 								cell.setCellValue(s.toString());
 							}

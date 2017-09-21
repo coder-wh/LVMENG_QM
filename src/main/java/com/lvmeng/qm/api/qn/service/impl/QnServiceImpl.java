@@ -47,7 +47,7 @@ public class QnServiceImpl implements IQnService {
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		OutputStream out = null;
 		try {
-			
+			//校验文件格式
 			if (file == null || file.getInputStream().available() == 0){
 				return result.failure("请选择文件");
 			}
@@ -59,7 +59,9 @@ public class QnServiceImpl implements IQnService {
 				return result.failure("该文件不是excel");
 			}
 			
+			//读取Excel数据封装为对象
 			List<Questionnaire> list = ExcelUtil.toVO(file.getInputStream());
+			//对问卷列表依据规则做处理
 			Map<String, List<? extends BaseQn>> map = dealWithQn(list);
 //			String createTime = LocalDateTime.now().toString();
 //			Set<String> keySet = map.keySet();
@@ -72,6 +74,7 @@ public class QnServiceImpl implements IQnService {
 //				result.failure("问卷存储失败条数" + (list.size() - rows));
 //			}
 			
+			//遍历处理好的map  分别插入不同的list到不同的sheet中
 			Set<String> keySet = map.keySet();
 			for (String key : keySet) {
 				List<? extends BaseQn> baseQnList = map.get(key);
@@ -90,12 +93,14 @@ public class QnServiceImpl implements IQnService {
 					break;
 				case CodeTable.QN_willOrNot:
 					ExcelUtil.toSheet(workbook, "愿意不愿意", CodeTable.willOrNotHeader, baseQnList, SaleQn.class);
+					break;
 				default:
 					break;
 				}
 			}
 //			out = new FileOutputStream("C:/Users/wanghui/Desktop/梅姐/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss")) + ".xls");
 //			workbook.write(out);
+			//将生成好的Excel以流的形式输出
 			DownloadUtil.downloadExcel(response, workbook, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss"))+"处理.xls");
 		}  catch (Exception e) {
 			e.printStackTrace();
@@ -113,8 +118,14 @@ public class QnServiceImpl implements IQnService {
 		return result;
 	}
 	
+	/**
+	 * 处理问卷
+	 * @param list
+	 * @return
+	 */
 	private Map<String,List<? extends BaseQn>> dealWithQn(List<Questionnaire> list) {
 		Map<String,List<? extends BaseQn>> map = new HashMap<>();
+		//初始化五类结果相应的list
 		List<ProQn> proQnList = new ArrayList<>();
 		List<SaleQn> saleQnList = new ArrayList<>();
 		List<SaleQn> willOrNotQnList = new ArrayList<>();
@@ -122,7 +133,9 @@ public class QnServiceImpl implements IQnService {
 		List<ContactQn> contactQnList = new ArrayList<>();
 		for (Questionnaire qn : list) {
 			List<String> l = qn.getQuestionnaire();
+			//问卷从下标42开始
 			int d = 42;
+			//初始化五类结果对应的对象
 			ProQn proQn = new ProQn();
 			SaleQn saleQn = new SaleQn();
 			FuncQn funcQn = new FuncQn();
@@ -131,6 +144,7 @@ public class QnServiceImpl implements IQnService {
 			for (int i = 0; i < l.size(); i++) {
 				String res = l.get(i);
 				if (StringUtils.isNotBlank(res)){
+					//依次判断每个答案是否符合五类结果取值逻辑
 					if (CodeTable.proPattern.containsKey(i+d)){
 						Pattern pattern = CodeTable.proPattern.get(i+d);
 						dealWithAnswer(proQn, res, pattern, qn);
@@ -153,12 +167,14 @@ public class QnServiceImpl implements IQnService {
 					}
 				}
 			}
+			//将基本属性的值拷贝至新对象
 			BeanUtils.copyProperties(qn, proQn);
 			BeanUtils.copyProperties(qn, saleQn);
 			BeanUtils.copyProperties(qn, funcQn);
 			BeanUtils.copyProperties(qn, contactQn);
 			BeanUtils.copyProperties(qn, willOrNotQn);
 			
+			//忘记此处代码的对应的需求了
 			if (proQn.getQuestionnaire().contains(new SetString(1,""))){
 				Set<SetString> set = proQn.getQuestionnaire();
 				boolean ifAddToProList = true;
@@ -176,13 +192,17 @@ public class QnServiceImpl implements IQnService {
 					proQnList.add(proQn);
 				}
 			}
+			//忘记此处代码的对应的需求了
 			if (saleQn.getQuestionnaire().contains(new SetString(1,""))){
 				saleQnList.add(saleQn);
 			}
+			//将对应对象添加至list中
 			willOrNotQnList.add(willOrNotQn);
 			funcQnList.add(funcQn);
 			contactQnList.add(contactQn);
 		}
+		
+		//将五类结果集封装为map返回   并以key来区分
 		map.put(CodeTable.QN_pro, proQnList);
 		map.put(CodeTable.QN_sale, saleQnList);
 		map.put(CodeTable.QN_func, funcQnList);
@@ -191,6 +211,13 @@ public class QnServiceImpl implements IQnService {
 		return map;
 	}
 
+	/**
+	 * 每个结果有四种取值逻辑  选择题   分数题    取全部值题(eg:文本题)  比较题(比较是否相同)
+	 * @param qn
+	 * @param res
+	 * @param pattern
+	 * @param sourceQn
+	 */
 	private void dealWithAnswer(BaseQn qn, String res, Pattern pattern, Questionnaire sourceQn) {
 		switch (pattern.getType()) {
 		case SELECT:
@@ -229,6 +256,13 @@ public class QnServiceImpl implements IQnService {
 		}
 	}
 
+	/**
+	 * 将符合逻辑的答案添加至对应答案集中
+	 * 答案集为Set   以SetString中的index值来排序      好让答案填到对应的问题那一列中
+	 * @param qn
+	 * @param res
+	 * @param pattern
+	 */
 	private void add(BaseQn qn, String res, Pattern pattern) {
 		SetString setString = new SetString(pattern.getIndex(), res);
 		Set<SetString> set = qn.getQuestionnaire();
