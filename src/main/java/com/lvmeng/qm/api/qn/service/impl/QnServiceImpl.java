@@ -88,6 +88,8 @@ public class QnServiceImpl implements IQnService {
 				case CodeTable.QN_contact:
 					ExcelUtil.toSheet(workbook, "联系人", CodeTable.contactHeader, baseQnList, ContactQn.class);
 					break;
+				case CodeTable.QN_willOrNot:
+					ExcelUtil.toSheet(workbook, "愿意不愿意", CodeTable.willOrNotHeader, baseQnList, SaleQn.class);
 				default:
 					break;
 				}
@@ -115,6 +117,7 @@ public class QnServiceImpl implements IQnService {
 		Map<String,List<? extends BaseQn>> map = new HashMap<>();
 		List<ProQn> proQnList = new ArrayList<>();
 		List<SaleQn> saleQnList = new ArrayList<>();
+		List<SaleQn> willOrNotQnList = new ArrayList<>();
 		List<FuncQn> funcQnList = new ArrayList<>();
 		List<ContactQn> contactQnList = new ArrayList<>();
 		for (Questionnaire qn : list) {
@@ -124,6 +127,7 @@ public class QnServiceImpl implements IQnService {
 			SaleQn saleQn = new SaleQn();
 			FuncQn funcQn = new FuncQn();
 			ContactQn contactQn = new ContactQn();
+			SaleQn willOrNotQn = new SaleQn();
 			for (int i = 0; i < l.size(); i++) {
 				String res = l.get(i);
 				if (StringUtils.isNotBlank(res)){
@@ -143,12 +147,18 @@ public class QnServiceImpl implements IQnService {
 						Pattern pattern = CodeTable.contactPattern.get(i+d);
 						dealWithAnswer(contactQn, res, pattern, qn);
 					}
+					if (CodeTable.willOrNotPattern.containsKey(i+d)) {
+						Pattern pattern = CodeTable.willOrNotPattern.get(i+d);
+						dealWithAnswer(willOrNotQn, res, pattern, qn);
+					}
 				}
 			}
 			BeanUtils.copyProperties(qn, proQn);
 			BeanUtils.copyProperties(qn, saleQn);
 			BeanUtils.copyProperties(qn, funcQn);
 			BeanUtils.copyProperties(qn, contactQn);
+			BeanUtils.copyProperties(qn, willOrNotQn);
+			
 			if (proQn.getQuestionnaire().contains(new SetString(1,""))){
 				Set<SetString> set = proQn.getQuestionnaire();
 				boolean ifAddToProList = true;
@@ -169,6 +179,7 @@ public class QnServiceImpl implements IQnService {
 			if (saleQn.getQuestionnaire().contains(new SetString(1,""))){
 				saleQnList.add(saleQn);
 			}
+			willOrNotQnList.add(willOrNotQn);
 			funcQnList.add(funcQn);
 			contactQnList.add(contactQn);
 		}
@@ -176,6 +187,7 @@ public class QnServiceImpl implements IQnService {
 		map.put(CodeTable.QN_sale, saleQnList);
 		map.put(CodeTable.QN_func, funcQnList);
 		map.put(CodeTable.QN_contact, contactQnList);
+		map.put(CodeTable.QN_willOrNot, willOrNotQnList);
 		return map;
 	}
 
