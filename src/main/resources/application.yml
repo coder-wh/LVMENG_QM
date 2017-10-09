@@ -12,7 +12,7 @@ server:
 
   
 db:
-  url: jdbc:mysql://119.29.201.220:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+  url: jdbc:mysql://47.95.204.157:3306/lvmeng_qm?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
   password: whui@root
  
 spring:
