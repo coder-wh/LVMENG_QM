@@ -174,28 +174,31 @@ public class QnServiceImpl implements IQnService {
 			BeanUtils.copyProperties(qn, contactQn);
 			BeanUtils.copyProperties(qn, willOrNotQn);
 			
-			//忘记此处代码的对应的需求了
-			if (proQn.getQuestionnaire().contains(new SetString(1,""))){
-				Set<SetString> set = proQn.getQuestionnaire();
-				boolean ifAddToProList = true;
-				for (SetString setString : set) {
-					if (setString.getIndex() == 0 && "合作伙伴".equals(setString.getStr())){
-						SaleQn sqn = new SaleQn();
-						BeanUtils.copyProperties(qn, sqn);
-						sqn.setQuestionnaire(proQn.getQuestionnaire());
-						saleQnList.add(sqn);
-						ifAddToProList = false;
-						break;
-					}
-				}
-				if (ifAddToProList){
-					proQnList.add(proQn);
-				}
-			}
-			//忘记此处代码的对应的需求了
-			if (saleQn.getQuestionnaire().contains(new SetString(1,""))){
-				saleQnList.add(saleQn);
-			}
+			//被注释掉代码需求为    Q1 与绿盟科技的合作过程中您的主要角色是属于？【合作伙伴】→【绿盟】的【技术】、【伙伴】的【技术】销售sheet中。
+//			if (proQn.getQuestionnaire().contains(new SetString(1,""))){
+//				Set<SetString> set = proQn.getQuestionnaire();
+//				boolean ifAddToProList = true;
+//				for (SetString setString : set) {
+//					if (setString.getIndex() == 0 && "合作伙伴".equals(setString.getStr())){
+//						SaleQn sqn = new SaleQn();
+//						BeanUtils.copyProperties(qn, sqn);
+//						sqn.setQuestionnaire(proQn.getQuestionnaire());
+//						saleQnList.add(sqn);
+//						ifAddToProList = false;
+//						break;
+//					}
+//				}
+//				if (ifAddToProList){
+//					proQnList.add(proQn);
+//				}
+//			}
+//			//忘记此处代码的对应的需求了
+//			if (saleQn.getQuestionnaire().contains(new SetString(1,""))){
+//				saleQnList.add(saleQn);
+//			}
+			
+			proQnList.add(proQn);
+			saleQnList.add(saleQn);
 			//将对应对象添加至list中
 			willOrNotQnList.add(willOrNotQn);
 			funcQnList.add(funcQn);
